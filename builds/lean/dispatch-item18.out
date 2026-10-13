@@ -1,0 +1,23 @@
+Warning: Extension package "/var/home/yangye/.pi/agent/npm/node_modules/@hugowiz/pi-tree-sitter/package.json": Host-provided extension packages must be declared in peerDependencies with a "*" range, not dependencies: typebox. Installed copies can bypass the extension loader and create duplicate runtime modules.
+All gates pass. Final report:
+
+## Tier-2 item 18 — landed
+
+**File:** `builds/lean/cir_existence_scratch.lean` — 515 lines, file-isolated (nothing else touched, no commit made).
+
+**Verification bar** (run from `AmericanPutConvexity/`):
+- `lake env lean ../builds/lean/cir_existence_scratch.lean` → **exit 0**, **0 errors, 0 warnings**
+- `grep -cE '^\s*sorry\b'` → **0**
+- `#print axioms` on all 15 public theorems → every one `[propext, Classical.choice, Quot.sound]` (0 deviations), including the headline `cirVariance_mean`
+
+**Theorem list:** kernel/substrate lemmas `ouKernel_continuous`, `ouKernel_memLp`, `ouKernel_integral_sq`, `ouKernelLp_integral_sq`, `ouWienerLaw` (exact Gaussian law of the core), `ouWiener_integral` (centered), `ouWiener_integral_sq` (isometry closed form); OU deliverables `ouProcess`, `ouProcess_hasLaw` (X_t ~ N(x₀e^{−kt/2}, (s²/k)(1−e^{−kt}))), `ouProcess_integral` (mean), `ouProcess_integral_sq` (second moment), `ouDrift_integral` + `ouProcess_drift_shape` (the dispatch's requested drift decomposition, pointwise); headline block `cirTheta`, `cirTheta_borderline` (2kθ = (2s)²), `cirVariance`, `cirVariance_nonneg` (pathwise), `cirVariance_mean` — **E[V_t] = θ(1−e^{−kt}) + v₀e^{−kt}** with θ = 2s²/k.
+
+**Substrate mismatches (all documented in the file header; for NOTES.md):**
+1. **The identity engine is inapplicable to OU at this pin.** `itoDrift_expectation_identity_adapted` requires a *globally* bounded drift (`hβbdd : ∀ t ω`) — OU's true Itô drift −(k/2)·X_u is linear-growth. The engine covers bounded-coefficient processes only.
+2. **The dispatch's deterministic-b shape is mathematically inconsistent with `hMeq`.** With b_u = −(k/2)x₀e^{−(k/2)u}, the residual M_t = s·e^{−(k/2)t}∫₀ᵗe^{(k/2)u}dB is mean-reverting, **not a martingale** (E[M_t|F_s] = e^{−(k/2)(t−s)}M_s), so it cannot be the engine's Itô-integral process. Landed instead as the pointwise identity `ouProcess_drift_shape` + `ouDrift_integral` (honest scope stated).
+3. **Name correction:** the deterministic-integral constructor is `MathFin.WienerIntegralL2.wienerIntegralLp` (with `wienerIntegralLp_integral_sq`, `wienerIntegralLp_hasLaw_gaussian`) — *not* `ItoIntegralBrownian`, which is the ∫B dB keystone.
+4. **No pathwise-continuous Itô-integral version exists at the pin** (`hXcont`/`hMadap` are never discharged in-repo; continuity lemmas are L²-norm only). So "continuous paths"/natFiltration-adaptedness is not landable for any Lp-class construction; existence landed at the level the pin supports — exact per-t Gaussian laws (the `hw_scratch`/`vasicekIntegratedRate` house pattern).
+
+**Stretch dropped cleanly:** the E-generator at 0 needs the joint 2D Gaussian law (independence of B₁,B₂ + BivariateGaussian) plus differentiation-under-the-integral with f‴-growth and √t-fluctuation control (Taylor + DCT at t→0) — a multi-stage program; not traded against core verification. Also noted in-file: the E-level headline does **not** need B₁⊥B₂ (expectations add regardless); the full CIR law of V would.
+
+Skipped: no git operations (per dispatch), no NOTES.md edit (orchestrator's job), no mdbook rebuild.

@@ -1,0 +1,74 @@
+TASK: Tier-2 build item 19 — the Heston affine transform at the generator/PDE
+level (2D: log-spot x + variance v, correlation ρ). Work in
+/var/home/yangye/devv/study/study-mathlib.
+
+FIRST read AGENTS.md (workspace root) — conventions are non-negotiable:
+research-first (verify every name/formula against the sources below before using
+it), the verification bar, one-file isolation, WIP-checkpoint rule (write each
+lemma to the deliverable as it verifies; never batch the file at the end).
+Subagents never run git — the orchestrator commits.
+
+SOURCES (research-first, in order):
+1. builds/lean/AffineEngineScratch.lean — the style model AND the substrate:
+   `expAffine`, `cirGenerator_expAffine`, `cirBracket_affine`,
+   `hasDerivAt_riccatiFlow_cirRoles`, `cirBondProfile_pde`, `cirGamma`
+   (γ = √(κ²+2ξ²)). Read it fully before writing.
+2. builds/lean/cir_existence_scratch.lean — item 18: what the E-level supports
+   at this pin (per-t laws only; header carries the four substrate findings).
+3. mdbook/src/lessons/0022-stochastic-vol-heston-affine.md — the build spec
+   (Gap 3 names this exact gateway: exp-affine invariance ⇒ A, B solve the
+   Riccati system).
+4. Bagaria ch. 14: pdftotext resources/fixed-income-notes-chapters/ch14*.pdf —
+   the exponential-affine manifold, Calculation 14.6 (ψ' = bψ + ½dψ²); scan
+   ledger at resources/fixed-income-notes-chapters/scans/ch14-scan.md.
+
+GOAL. Deliverable: builds/lean/heston_scratch.lean, staged small verified steps.
+
+1. The 2D Heston generator on test functions f : ℝ × ℝ → ℝ (x = log-spot,
+   v = variance), constants r κ θ ξ ρ with κ > 0, θ > 0, ξ > 0, |ρ| < 1:
+   Lf = (r − v/2) ∂_x f + κ(θ − v) ∂_v f + (v/2) ∂_xx f + ρ ξ v ∂_xv f + (ξ² v/2) ∂_vv f.
+   Define it acting on the exponential-affine family
+   E_{A,Bx,Bv}(x,v) := Real.exp (A + Bx * x + Bv * v) and prove the 2D
+   invariance lemma: L E is again a multiple of an exponential-affine function,
+   with the coefficient identities that read off the Heston Riccati system for
+   the (Bx, Bv, A) triple. (Mirrors `cirGenerator_expAffine` +
+   `cirBracket_affine`; the cross term ρ ξ v ∂_xv is the genuinely new 2D piece.)
+
+2. The Riccati-flow verification: write the ODEs the coefficients must solve
+   (RESEARCH the exact signs/coefficients from Calculation 14.6 + lesson 0022 —
+   do not trust memory), then prove the flow facts at the level the CIR engine
+   established (`hasDerivAt_riccatiFlow_cirRoles` pattern): the Bv-ODE is the
+   CIR-type Riccati already solved by the affine engine (γ = √(κ²+…) with the
+   ρ-shifted κ); Bx is linear (exact closed form); A integrates the Bv-flow.
+
+3. The PDE headline (mirrors `cirBondProfile_pde`): define the candidate
+   transform profile Φ(t, x, v) := E_{A(T−t), Bx(T−t), Bv(T−t)}(x, v) with
+   terminal condition Φ(T, x, v) = Real.exp (u * x) for the REAL moment
+   parameter u ∈ ℝ (the real-moment transform M(u) = E[e^{u log S_T}]; the
+   complex characteristic function φ(u) = M(iu) is the same Riccati system —
+   take the real route, ℂ-calculus is not the point here). Prove:
+   ∂_t Φ + L Φ = 0 on [0,T] and the terminal identity. Every derivative via
+   HasDerivAt/HasFDerivAt assembled from the affine engine's lemmas.
+
+4. Gated residue (state, do not prove): E[e^{u log S_T}] = Φ(0, x₀, v₀) needs
+   the Itô drift of exp-affine-of-(logS,V) along a Heston solution — process
+   existence at this pin is out of reach (item 18 finding 4); record it as the
+   honest gate, exactly as the affine engine records its PDE-vs-expectation gap.
+
+CONSTRAINTS: file-isolated — create ONLY builds/lean/heston_scratch.lean; touch
+nothing else; no git. Import only pin-verified modules (AffineEngineScratch
+imports; if you need a name from a module missing at the pin, rebuild it
+privately in the file — house-lemma pattern).
+
+VERIFICATION BAR (run yourself and report output):
+  cd /var/home/yangye/devv/study/study-mathlib/AmericanPutConvexity
+  lake env lean ../builds/lean/heston_scratch.lean
+  → exit 0; zero sorry; #print axioms on every public theorem → only
+  'propext, Classical.choice, Quot.sound'.
+
+CHECKPOINT DISCIPLINE: after each landed lemma, keep the file compiling. An
+outage can kill this run — the partial file is the resume point.
+
+REPORT BACK: file path + line count; theorem list with axiom-check output;
+build output tail; every substrate mismatch found (exact names — they go into
+mdbook/src/NOTES.md); which route you took for the Bv-flow (reuse vs re-derive).

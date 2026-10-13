@@ -1,0 +1,63 @@
+TASK: Tier-2 build item 18 — CIR existence slice via explicit squared-OU
+(Feller-borderline 2D construction). Work in /var/home/yangye/devv/study/study-mathlib.
+
+FIRST read AGENTS.md (workspace root) — conventions are non-negotiable:
+research-first (verify every name against the clones before using it), the
+verification bar, one-file isolation.
+
+GOAL. Construct the CIR variance process explicitly as V t := (X1 t)^2 + (X2 t)^2
+where X1, X2 are explicit Ornstein–Uhlenbeck processes, and prove at the stack's
+expectation level:
+
+1. OU existence, explicitly (NO SDE solver): for a Brownian motion β and constants
+   x0, k > 0, s > 0 define
+     X t := Real.exp (-(k/2) * t) • (x0 + s • ∫_[0,t] (fun u => Real.exp (k/2 * u)) dβ)
+   using the stack's stochastic integral (see RESEARCH below for the exact name/form
+   at the MathFin pin). Prove: X is adapted, has continuous paths, and fits the
+   drift+martingale shape X t = c + driftPrim b t + M t consumed by the stack's
+   adapted identity, with c = x0 and b u := -(k/2) * x0 * exp(-(k/2) * u)
+   (deterministic ⇒ adapted; bounded by |x0|*k/2 on each [0,T]).
+
+2. Nonnegativity (pathwise): V t ω := (X1 t ω)^2 + (X2 t ω)^2 ≥ 0 for all t, ω.
+
+3. CIR mean dynamics (the headline): with v0 := x1_0^2 + x2_0^2 and theta := 2*s^2/k
+   (so that 2*k*theta = (2s)^2 — the Feller-borderline parametrization of
+   dV = k(theta - V) dt + 2s sqrt(V) dW), prove
+     E[V t] = theta * (1 - exp(-k * t)) + v0 * exp(-k * t).
+   Route: apply the stack's adapted expectation identity (below) per component with
+   f = (·)^2, f' = 2·id, f'' = 2, f''' = 0, then sum the two components.
+
+RESEARCH FIRST (mandatory — do not trust any name above without checking):
+- The identity engine: AmericanPutConvexity/ItoContribution.lean (~line 6039)
+  `itoDrift_expectation_identity_adapted`: for X t = c + driftPrim β t + M t with β
+  adapted (natFiltration), continuous, |β| ≤ Db, and f, f', f'', f''' the test
+  functions it requires — READ its exact hypothesis list and conclusion form, then
+  match X1/X2 into it. Read `driftPrim`'s definition in the same file.
+- The stochastic integral: ItoContribution.lean's import list (lines ~164–176) names
+  the MathFin pin modules (ItoIntegralBrownian, ItoIntegralProcessGeneral,
+  ItoIsometryAdapted, GaussianMoments, ...). Grep mathfin/MathFin/Foundations/ for
+  the exact integral constructor for deterministic integrands against Brownian
+  motion and its exact hypotheses (adaptedness of the integrand is usually free for
+  deterministic ones; check boundedness on [0,T]). If a module name is not
+  available at the pin, rebuild the lemma privately in the build file
+  (house-lemma pattern, per AGENTS.md).
+- Style model: builds/lean/AffineEngineScratch.lean (explicit flows + closed forms,
+  staged small verified steps). Read it before writing.
+
+DELIVERABLE: builds/lean/cir_existence_scratch.lean (file-isolated — create ONLY
+this file, touch nothing else; do NOT run git commit — the orchestrator commits).
+
+VERIFICATION BAR (run yourself and report the output):
+  cd /var/home/yangye/devv/study/study-mathlib/AmericanPutConvexity
+  lake env lean ../builds/lean/cir_existence_scratch.lean
+  → exit 0; grep -cE '^\s*sorry\b' → 0; #print axioms on every public theorem →
+  only 'Propext, Classical.choice, Quot.sound'.
+
+STRETCH (only if the core lands with budget left): the E-level generator at 0 —
+for the identity's admissible (f, f', f'', f'''), the right derivative at t = 0 of
+E[f(V t)] equals (2*s^2 - k*v0) * f'(v0) + 2*s^2 * v0 * f''(v0). Drop the stretch
+cleanly if the core consumes the budget; never trade core verification for it.
+
+REPORT BACK: file path + line count; theorem list with axiom-check output; build
+output tail; every substrate mismatch you found (exact name corrections matter —
+they go into mdbook/src/NOTES.md).

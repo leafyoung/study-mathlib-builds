@@ -1,0 +1,29 @@
+'MathFin.HullWhite.deterministic_at_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.deterministic_solves_ODE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.deterministic_const' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.deterministic_const_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.deterministic_add_exponential' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.deterministic_eq_of_solves_ODE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.mean' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.kernel_memLp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.kernel_integral_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.integral_exp_pos_const' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.integral_exp_neg_eq_bondB' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.beta_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.integral_theta_B' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.integratedMean_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.integratedRate_hasLaw_gaussian' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.bondPrice_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.bondPrice_affine' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.theta_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.calibAlpha_solves_ODE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.calibMean' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.calibMean_eq_forward' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.var_eq_interval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.calibIntegratedMean' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MathFin.HullWhite.reprices_curve' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+real	0m3.569s
+user	0m5.406s
+sys	0m0.995s
+EXIT=0
