@@ -69,7 +69,15 @@ canonical gate is mathfin's CI trio at v4.33.0-rc1).
 >   working-tree changes + patches; nothing lost.
 > - Local verification vehicle throughout: the AC build face (v4.32.0/mathlib 81a5d257) port-test
 >   compiles, all axiom-clean; the canonical gate remains the CI trio (v4.33.0-rc1) per PR.
-> - **Path C is due**: `builds/lean/` snapshot for a versioned archive at this milestone.
+> - **Path C (2026-10-14)**: (a) DONE — public artifact repo
+>   [`leafyoung/study-mathlib-builds`](https://github.com/leafyoung/study-mathlib-builds),
+>   tag + release `v1.0.0` (tracked `builds/lean/` content + provenance README +
+>   Apache-2.0 + tarball; deliberately EXCLUDES the workspace's copyrighted Bagaria
+>   PDFs). (b) DONE — **Zenodo DOI: `10.5281/zenodo.23355884`**
+>   ([zenodo.org/record/23355884](https://zenodo.org/record/23355884)); deposit
+>   23355884 published 2026-10-14 (user token via `.env`; checksum-verified tarball,
+>   metadata: software/Apache-2.0/open, related to the artifact repo + mathfin fork).
+>   Path C is COMPLETE.
 
 The mathfin tree (`github.com/formal-applied-math/formal-mathfin`) accepts PRs through
 its documented pipeline (`CONTRIBUTING.md`): PR template, CI gates

@@ -97,3 +97,31 @@ mechanism when the user asks for workflow dispatch.
   (`exists_eq_measurable_comp`). Archived + git `36445e0`.
 - Forward-eq: `ForwardEqScratch.lean` 705 → 1273 lines — constant + time-dependent
   Fokker–Planck + migration lemmas (DCT-dominated). Archived + git `3246e7b`.
+
+---
+
+## ROADMAP (2026-10-15) — upstream sequence after #247 merges
+
+**A. Promotion of the six stub-campaign builds** (each = module-ize per #247's header
+form + MathFin.lean root import + CI trio; PRs may bundle per maintainer tolerance):
+`RiskMeasures/DiscreteVaR.lean` (discrete_var_scratch — PR-ready per memo),
+`FixedIncome/OUSpectral.lean` (ou_spectral_scratch), `Foundations/ForwardSmile.lean`,
+`Foundations/LSVLeverage.lean`-shaped (lsv_scratch), `FixedIncome/Inflation.lean`
+(inflation_scratch), `Foundations/Estimation.lean`-shaped (EstimationScratch).
+
+**B. The three #244 review pickups** (maintainer raphaelrrcoelho, docs/values-review.md
+2026-10-14 entry; sequenced AFTER A — they refactor the modules A promotes):
+- **B1 — unconditional adapted identity** (largest, quasi-research): make
+  `ItoFormulaAdaptedDrift`'s expectation identity unconditional on the hypothesized
+  M/X, or derive it from `ItoFormulaAdapted.ito_formula_adapted`.
+- **B2 — bootstrap prefix hypotheses + Bisection switch**: restate
+  Bootstrapping's induction hypotheses at the prefix the recursion actually
+  feeds in, and consume the upstream `Foundations/Bisection` instead of the
+  self-contained private engine.
+- **B3 — deduplication**: drop overlaps of our modules against
+  `VasicekSDEGaussian` and `AdaptedDrift` (reuse the landed lemmas).
+
+**C. Standing**: upstream `main` is the integration point (fork branches are
+bookkeeping, all fast-forwarded to 55a3c4f); every upstream PR carries the
+repo-owner copyright + `Authors: Yang Ye` per #247's settled convention, and
+self-runs `lake build && lake lint` where the environment allows.
